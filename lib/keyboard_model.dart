@@ -151,9 +151,9 @@ class KeyboardModel extends ChangeNotifier{
     final shouldNotCreateNewField = textFieldService.trySelectNextFocus();
     if(!shouldNotCreateNewField){
       final parsedWidgetData = parsersService.parseWidgetList(formulaGroopWidgets, textFieldService.activeTextFieldData.controller);
-      final textfield = mathConstructionsBuildingService.createTextField(replaceOldFocus: true);
+      final textFieldConstruction = mathConstructionsBuildingService.createTextField(replaceOldFocus: true);
         if(parsedWidgetData != null){
-          dataHandler.addToWidgetTree(parsedWidgetData, [textfield]); 
+          dataHandler.addToWidgetTree(parsedWidgetData, [textFieldConstruction.construction]); 
           rebuildSreenState();
         }
       // notifyListeners();

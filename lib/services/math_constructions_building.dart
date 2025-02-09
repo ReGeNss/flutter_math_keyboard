@@ -32,7 +32,7 @@ class MathConstructionsBuilding {
   final TextFieldHandleAndCreateService textFieldService;
 
   MathConstructionsBuilding({required this.textFieldService});
-  Widget createTextField({bool replaceOldFocus = false, bool? standartSize}) {
+  MathConstructionData createTextField({bool replaceOldFocus = false, bool? standartSize}) {
     late final Widget textField;  
     if(standartSize == null){
       textField = textFieldService.createTextField(
@@ -46,10 +46,10 @@ class MathConstructionsBuilding {
         selectedTextFieldFormat: standartSize ? TextFieldFormat.standart : TextFieldFormat.small
       );
     }
-    return textField;
+    return MathConstructionData(construction: textField);
   }
 
-  Widget createFracWidget() {
+  MathConstructionData createFracWidget() {
     final upperField = textFieldService.createTextField(
         isReplaceOperation: true, isActiveTextField: true);
     final downField = textFieldService.createTextField(
@@ -87,10 +87,10 @@ class MathConstructionsBuilding {
         ],
       ),
     );
-    return fracWidget;
+    return MathConstructionData(construction: fracWidget);
   }
 
-  Widget createExpWidget(Widget baseWidget, TextFieldData baseFieldData) {
+  MathConstructionData createExpWidget(Widget baseWidget, TextFieldData baseFieldData) {
     final expGlobalKey = GlobalKey();
     final baseGlobalKey = GlobalKey();
     final textField = textFieldService.createTextField(
@@ -104,7 +104,7 @@ class MathConstructionsBuilding {
       textField: textField,
       baseGlobalKey: baseGlobalKey,
     );
-    return widget;
+    return MathConstructionData(construction: widget);
   }
 
   Widget createCharWidget({required bool isActiveTextField}) {
@@ -113,44 +113,39 @@ class MathConstructionsBuilding {
     return textFieldWidget;
   }
 
-  Widget createSqrtWidget() {
+  MathConstructionData createSqrtWidget() {
     final globalKey = GlobalKey();
     final textFieldWidget = textFieldService.createTextField(
         isReplaceOperation: true, isActiveTextField: true);
     final adictionalField =
         textFieldService.createTextField(isReplaceOperation: false);
-    final sqrtWidget = Row(
-      children: [
-        SizedBox(
-          key: const ValueKey(ElementsType.sqrtElement),
-          child: Stack(
-            clipBehavior: Clip.none,
-            children: [
-              Positioned(
-                key: globalKey,
-                top: 5,
-                left: 25,
-                child: Row(
-                  children: [
-                    textFieldWidget,
-                  ],
-                ),
-              ),
-              IgnorePointer(
-                child: _SqrtCustomPaint(
-                  globalKey: globalKey,
-                ),
-              ),
-            ],
+    final sqrtWidget = SizedBox(
+      key: const ValueKey(ElementsType.sqrtElement),
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          Positioned(
+            key: globalKey,
+            top: 5,
+            left: 25,
+            child: Row(
+              children: [
+                textFieldWidget,
+              ],
+            ),
           ),
-        ),
-        adictionalField,
-      ],
+          IgnorePointer(
+            child: _SqrtCustomPaint(
+              globalKey: globalKey,
+            ),
+          ),
+        ],
+      ),
     );
-    return sqrtWidget;
+    return MathConstructionData(construction: sqrtWidget, addictionalWidget: adictionalField);
   }
 
-  Widget createLogWidget() {
+  MathConstructionData createLogWidget() {
     final argField =
         textFieldService.createTextField(isReplaceOperation: false);
     final baseField = textFieldService.createTextField(
@@ -185,10 +180,10 @@ class MathConstructionsBuilding {
         ],
       ),
     );
-    return logWidget;
+    return MathConstructionData(construction: logWidget);
   }
 
-  Widget createLimitWidget() {
+  MathConstructionData createLimitWidget() {
     final argField = textFieldService.createTextField(
         isReplaceOperation: false, performAdictionalTextField: true);
     final firstDownField = textFieldService.createTextField(
@@ -206,10 +201,10 @@ class MathConstructionsBuilding {
       secondDownField: secondDownField,
       globalKey: globalKey,
     );
-    return limitWidget;
+    return MathConstructionData(construction: limitWidget);
   }
 
-  Widget createNamedFunctionWidget(String functionName, ElementsType type) {
+  MathConstructionData createNamedFunctionWidget(String functionName, ElementsType type) {
     final textFieldWidget = textFieldService.createTextField(
         isReplaceOperation: true,
         isActiveTextField: true,
@@ -232,10 +227,10 @@ class MathConstructionsBuilding {
         ],
       ),
     );
-    return widget;
+    return MathConstructionData(construction: widget);
   }
 
-  Widget createAbsWidget() {
+  MathConstructionData createAbsWidget() {
     final textFieldWidget = textFieldService.createTextField(
         isReplaceOperation: true,
         isActiveTextField: true,
@@ -244,40 +239,35 @@ class MathConstructionsBuilding {
         textFieldService.createTextField(isReplaceOperation: false);
 
     final globalKey = GlobalKey();
-    final absWidget = Row(
-      children: [
-        SizedBox(
-          key: const ValueKey(ElementsType.absElement),
-          child: Row(
-            key: globalKey,
+    final absWidget = SizedBox(
+      key: const ValueKey(ElementsType.absElement),
+      child: Row(
+        key: globalKey,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(right: 5),
+            child: AbsLineWidget(
+              globalKey: globalKey,
+            ),
+          ),
+          Row(
             children: [
-              Padding(
-                padding: const EdgeInsets.only(right: 5),
-                child: AbsLineWidget(
-                  globalKey: globalKey,
-                ),
-              ),
-              Row(
-                children: [
-                  textFieldWidget,
-                ],
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 5),
-                child: AbsLineWidget(
-                  globalKey: globalKey,
-                ),
-              ),
+              textFieldWidget,
             ],
           ),
-        ),
-        adictionalField
-      ],
+          Padding(
+            padding: const EdgeInsets.only(left: 5),
+            child: AbsLineWidget(
+              globalKey: globalKey,
+            ),
+          ),
+        ],
+      ),
     );
-    return absWidget;
+    return MathConstructionData(construction: absWidget, addictionalWidget: adictionalField);
   }
 
-  Widget createBracketsWidget() {
+  MathConstructionData createBracketsWidget() {
     final textFieldWidget = textFieldService.createTextField(
       isReplaceOperation: true,
       isActiveTextField: true,
@@ -285,16 +275,11 @@ class MathConstructionsBuilding {
     final adictionalField = textFieldService.createTextField(
       isReplaceOperation: false,
     );
-    final backetsWidget = Row(
-      children: [
-        BacketsWidget(textFieldWidget: textFieldWidget),
-        adictionalField,
-      ],
-    );
-    return backetsWidget;
+    final backetsWidget = BacketsWidget(textFieldWidget: textFieldWidget);
+    return MathConstructionData(construction: backetsWidget, addictionalWidget: adictionalField);
   }
 
-  Widget createUndefinitIntegralWidget() {
+  MathConstructionData createUndefinitIntegralWidget() {
     final argFieldWidget = textFieldService.createTextField(
         isReplaceOperation: true, isActiveTextField: true);
     final addictionalField = textFieldService.createTextField(
@@ -304,35 +289,30 @@ class MathConstructionsBuilding {
         isReplaceOperation: false, performAdictionalTextField: false);
     textFieldService.markAsGrop(argFieldWidget, derevativeField); 
     final integralWidget = Row(
+      key: const ValueKey(ElementsType.indefiniteIntegralElement),
       children: [
+        const Text(
+          '∫',
+          style: TextStyle(fontSize: 25),
+        ),
         Row(
-          key: const ValueKey(ElementsType.indefiniteIntegralElement),
+          children: [argFieldWidget],
+        ),
+        const Text(
+          'd',
+          style: TextStyle(fontSize: 20),
+        ),
+        Row(
           children: [
-            const Text(
-              '∫',
-              style: TextStyle(fontSize: 25),
-            ),
-            Row(
-              children: [argFieldWidget],
-            ),
-            const Text(
-              'd',
-              style: TextStyle(fontSize: 20),
-            ),
-            Row(
-              children: [
-                derevativeField,
-              ],
-            ),
+            derevativeField,
           ],
         ),
-        addictionalField
       ],
     );
-    return integralWidget;
+    return MathConstructionData(construction: integralWidget, addictionalWidget: addictionalField);
   }
 
-  Widget createDerevativeWidget(String? upperFieldText, String? downFieldText) {
+  MathConstructionData createDerevativeWidget(String? upperFieldText, String? downFieldText) {
     final upperField = textFieldService.createTextField(
         isReplaceOperation: true, isActiveTextField: true);
     final downField = textFieldService.createTextField(
@@ -374,10 +354,10 @@ class MathConstructionsBuilding {
         ],
       ),
     );
-    return derevativeWidget;
+    return MathConstructionData(construction: derevativeWidget);
   }
 
-  Widget createIntegralWidget() {
+  MathConstructionData createIntegralWidget() {
     final startPointField = textFieldService.createTextField(
         isReplaceOperation: true,
         isActiveTextField: true,
@@ -404,7 +384,7 @@ class MathConstructionsBuilding {
         argFieldWidget: argFieldWidget,
         derevativeField: derevativeField,
         globalKey: globalKey);
-    return integralWidget;
+    return MathConstructionData(construction: integralWidget);
   }
 
   Widget initialization() {
@@ -899,7 +879,6 @@ class _FracDividerWidgetState extends State<FracDividerWidget> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     WidgetsBinding.instance.removeTimingsCallback(getSize);
     super.dispose();
   }
@@ -907,15 +886,8 @@ class _FracDividerWidgetState extends State<FracDividerWidget> {
   @override
   void initState() {
     WidgetsBinding.instance.addTimingsCallback(getSize);
-    // TODO: implement initState
     super.initState();
   }
-
-  // @override
-  // void init() {
-  //   WidgetsBinding.instance.addTimingsCallback((_) => getSize());
-  //   super.didChangeDependencies();
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -926,4 +898,11 @@ class _FracDividerWidgetState extends State<FracDividerWidget> {
       ),
     );
   }
+}
+
+class MathConstructionData {
+  final Widget? addictionalWidget;
+  final Widget construction;
+
+  MathConstructionData({required this.construction, this.addictionalWidget});
 }

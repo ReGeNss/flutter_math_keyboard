@@ -83,9 +83,10 @@ class FormulaToTexParser {
                 switch (keyValue) {
                   case (ElementsType.absElement):
                     {
-                      final absString = absParser([element.child!]);
-                      formulaInTeX = formulaInTeX + absString;
-                      // return formulaInTeX;
+                      addToTeXData(
+                        widget: element.child!,
+                        parseFunctionByChild: absParser
+                      );
                     }
                   case (ElementsType.logElement):
                   {
@@ -265,6 +266,7 @@ class FormulaToTexParser {
       String? teXFormula
     }) {
     final intermediateTeXData = formulaInTeX;
+    formulaInTeX = '';
     var teXData = '';
     if (parseFunctionByChildren != null && widgets != null) {
       teXData = parseFunctionByChildren(widgets) as String;
@@ -431,23 +433,22 @@ class FormulaToTexParser {
       if (element.runtimeType == Row && integralData[1].isEmpty) {
         final arg = element as Row;
         _formulaParser(arg.children);
-        integralData[0] = formulaInTeX;
-      } else if (element.runtimeType == SizedBox && integralData[1].isEmpty) {
-        final sizedBox = element as SizedBox;
-        _formulaParser([sizedBox.child!]);
-        integralData[1] = formulaInTeX;
-      }
+        if(integralData[0].isEmpty){
+          integralData[0] = formulaInTeX;
+        }else {
+          integralData[1] = formulaInTeX;
+        }
       formulaInTeX = '';
+      }
     }
 
     final integral = '\\int ${integralData[0]} d${integralData[1]} ';
     return integral;
   }
 
-  String absParser(List<Widget> widgets) {
-    if (widgets.first is Row) {
-      final row = widgets.first as Row;
-      final fieldData = _formulaParser(row.children);
+  String absParser(Widget widget) {
+    if (widget is Row) {
+      final fieldData = _formulaParser(widget.children);
       formulaInTeX = '';
       return '\\left| $fieldData \\right|';
     }
